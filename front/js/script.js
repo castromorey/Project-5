@@ -1,5 +1,7 @@
+//this function send a request to the backend to show the list products
+
 function fetchProducts(){
-    fetch('http://localhost:3000/api/products').then(res=>res.json()).then(products=>{
+    fetch('http://localhost:3000/api/products').then(res=>res.json()).then(products=>{ //http is endpoint url to interact with an external API
         const items = document.querySelector('#items');
         console.log(products);
 
