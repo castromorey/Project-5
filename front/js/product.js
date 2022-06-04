@@ -3,15 +3,24 @@ const colorsElm = document.querySelector('#colors');
 const qtyElm = document.querySelector('#quantity');
 
 const searchParams = new URLSearchParams(location.search);
-const productId = searchParams.get('id')
+const productId = searchParams.get('id');
+
+let data = {};
 
 function fetchProduct(){
-    fetch('http://localhost:3000/api/products/' + productId).then(res=>res.json()).then(product=>{
+    fetch('http://localhost:3000/api/products/' + productId).then(res=>res.json()).then(({name, price, imageUrl, ...product})=>{
         
-        document.querySelector('#title').innerHTML=product.name;
-        document.querySelector('#price').innerHTML=product.price;
+        data = {
+            name,
+            price, 
+            imageUrl
+        };
+        
+        document.title = name;
+        document.querySelector('#title').innerHTML=name;
+        document.querySelector('#price').innerHTML=price;
         document.querySelector('#description').innerHTML=product.description;
-        document.querySelector(".item__img").innerHTML=`<img src="${product.imageUrl}" alt="${product.altTxt}" />`;
+        document.querySelector(".item__img").innerHTML=`<img src="${imageUrl}" alt="${product.altTxt}" />`;
         
         product.colors.map((color) => {
             colorsElm.innerHTML+=`<option value="${color}">${color}</option>`;
@@ -27,20 +36,39 @@ const addToCart = () => {
 
 
 
-    const data = {
+    data = {
+        ...data,
         productId,
         color: colorsElm.value,
         qty: Number(qtyElm.value)
     }
 
+
     const errors = {};
 
     if(!data.color) errors.color = 'Must select a color.'
     if(!data.qty) errors.qty = 'Quantity must be 1 or more'
+    
 
     if(Object.keys(errors).length === 0 ) {
-        const cart = JSON.parse(localStorage.getItem('cart'));
-        localStorage.setItem('cart', JSON.stringify([...cart, data]))
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        
+        const product = cart.find(item => item.productId === data.productId && item.color === data.color );
+        if(product) {
+            product.qty = product.qty + data.qty;
+
+            console.log({cart})
+
+            cart = cart.filter(item => product.productId !== item.productId  && item.color === data.color)
+
+            console.log({cart})
+
+            localStorage.setItem('cart', JSON.stringify([...cart, product]))
+        }else{
+            localStorage.setItem('cart', JSON.stringify([...cart, data]))
+        }
+
     }else{
         console.log({errors})
     }
