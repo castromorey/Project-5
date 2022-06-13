@@ -50,19 +50,22 @@ const addToCart = () => {
     if(!data.qty) errors.qty = 'Quantity must be 1 or more'
     
 
+    //list from local storage
     if(Object.keys(errors).length === 0 ) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        
-        const product = cart.find(item => item.productId === data.productId && item.color === data.color );
+        //aqui debe estar la falla
+     const product = cart.find(item => item.productId === data.productId && item.color === data.color );
         if(product) {
             product.qty = product.qty + data.qty;
 
-            console.log({cart})
+            //console.log({cart})
 
-            cart = cart.filter(item => product.productId !== item.productId  && item.color === data.color)
+            cart = cart.filter(item => {
+                return product.productId !== item.productId
+            })
 
-            console.log({cart})
+            //console.log({cart})
 
             localStorage.setItem('cart', JSON.stringify([...cart, product]))
         }else{

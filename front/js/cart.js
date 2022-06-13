@@ -10,6 +10,7 @@ const updateQty = (e) => {
     const itemId = Number(e.path[4].dataset.id);
 
     cartItems = cartItems.map((item, cartId) => {
+
         if(cartId === itemId) return {...item, qty: e.target.valueAsNumber }
         else return item;
     })
@@ -90,6 +91,8 @@ const calculateTotals = (items) => {
     let orderItems = 0;
     let orderTotal = 0;
 
+
+    //calculate total order
     for (const item of items) {
         orderItems += item.qty
         orderTotal += item.qty * item.price    
