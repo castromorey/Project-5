@@ -5,6 +5,7 @@ const totalQuantity = document.querySelector('#totalQuantity');
 const totalPrice = document.querySelector('#totalPrice');
 
 
+
 const updateQty = (e) => {
 
     const itemId = Number(e.path[4].dataset.id);
@@ -108,7 +109,101 @@ let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 displayItems(cartItems)
 calculateTotals(cartItems)
 
+// validating form code input and sending.
 
+//accessing to form
+const formFields = document.getElementsByClassName('cart__order__form');
+const entries = document.querySelectorAll('.cart__order input');
+
+
+const fieldInput = {
+	
+	//nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/
+    first_Name: /^[a-zA-ZÀ-ÿ\s]/,
+    last_Name: /^[a-zA-ZÀ-ÿ\s]/,
+    cities: /^[a-zA-ZÀ-ÿ\s]/,
+	e_mail: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+
+}
+
+// validating Form fields
+
+
+const formValidate = (e) =>{
+    switch (e.target.name){
+        
+        case "firstName":
+            if(fieldInput.first_Name.test(e.target.value)){
+               document.querySelector('#firstNameErrorMsg').innerHTML = '';
+            } else {
+                document.querySelector('#firstNameErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
+               document.getElementById("firstName").focus();
+             
+         
+            }
+            break;
+
+        case "lastName":
+            if(fieldInput.last_Name.test(e.target.value)){
+                document.querySelector('#lastNameErrorMsg').innerHTML = '';
+            } else {
+              document.querySelector('#lastNameErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
+              document.getElementById("lastName").focus();
+            }
+            break;
+
+        case "address":
+            break;
+
+        case "city":
+            if(fieldInput.cities.test(e.target.value)){
+                document.querySelector('#cityErrorMsg').innerHTML = '';
+            } else {
+              document.querySelector('#cityErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
+              document.getElementById("city").focus();
+            }
+            break;
+
+
+        case "email":
+            if(fieldInput.e_mail.test(e.target.value)){
+                document.querySelector('#emailErrorMsg').innerHTML = '';
+            } else {
+              document.querySelector('#emailErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
+              document.getElementById("city").focus();
+            }
+            break;
+       
+    }
+}
+
+entries.forEach((input) => {
+    //input.addEventListener('keyup', formValidate);
+    input.addEventListener('blur', formValidate);
+});
+
+
+/*formFields.addEventListener('submit', (e) =>{
+    e.preventDefault();
+});*/
+
+
+
+/*document.addEventListener("DOMContentLoaded", function(){
+    document.getElementById("cart__order__form").addEventListener('cart__order__form__submit',validateForm);
+});
+
+
+
+function validateForm(event){
+    event.preventDefault();
+    let userName = document.getElementById('firstName').value;
+    //if(userName.length ==0){
+    if(userName === 5){
+        alert('Numbers not permitted');
+        return;
+    }
+}*/
 
 
 
