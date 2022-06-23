@@ -112,7 +112,7 @@ calculateTotals(cartItems)
 // validating form code input and sending.
 
 //accessing to form
-const formFields = document.getElementsByClassName('cart__order__form');
+const cartForm = document.querySelector('.cart__order__form');
 const entries = document.querySelectorAll('.cart__order input');
 
 
@@ -130,86 +130,155 @@ const fieldInput = {
 
 
 const formValidate = (e) =>{
+
+    const hasNumber = (myString) => /\d/.test(myString);
+    const hasSpecialChars = (myString) => /^[A-Za-zÀ-ÿ0-9 ]+$/.test(myString);
+    const isEmail = (myString) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(myString.toLowerCase());
+    
+
+
     switch (e.target.name){
         
         case "firstName":
-            if(fieldInput.first_Name.test(e.target.value)){
-               document.querySelector('#firstNameErrorMsg').innerHTML = '';
-            } else {
-                document.querySelector('#firstNameErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
-               document.getElementById("firstName").focus();
-             
-         
+
+            const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg')
+
+            if(!e.target.value) {
+                firstNameErrorMsg.innerHTML = 'This field cannot be blank';
+               return;
             }
+
+            if(hasNumber(e.target.value)) {
+                firstNameErrorMsg.innerHTML = 'This field cannot contain numbers';
+                return;
+            }
+            
+            if(!hasSpecialChars(e.target.value)) {
+                firstNameErrorMsg.innerHTML = 'This field cannot contain special characters';
+                return;
+            }
+
+            firstNameErrorMsg.innerHTML = '';
+
             break;
 
         case "lastName":
-            if(fieldInput.last_Name.test(e.target.value)){
-                document.querySelector('#lastNameErrorMsg').innerHTML = '';
-            } else {
-              document.querySelector('#lastNameErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
-              document.getElementById("lastName").focus();
+
+            const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg')
+            
+            if(!e.target.value) {
+                lastNameErrorMsg.innerHTML = 'This field cannot be blank';
+               return;
             }
+
+            if(hasNumber(e.target.value)) {
+                lastNameErrorMsg.innerHTML = 'This field cannot contain numbers';
+                return;
+            }
+            
+            if(!hasSpecialChars(e.target.value)) {
+                lastNameErrorMsg.innerHTML = 'This field cannot contain special characters';
+                return;
+            }
+
+            lastNameErrorMsg.innerHTML = '';
+
+            
             break;
 
         case "address":
+            if(!e.target.value) {
+                document.querySelector('#addressErrorMsg').innerHTML = 'This field cannot be blank';
+               return;
+            }
+
+            document.querySelector('#addressErrorMsg').innerHTML = '';
+
             break;
 
         case "city":
-            if(fieldInput.cities.test(e.target.value)){
-                document.querySelector('#cityErrorMsg').innerHTML = '';
-            } else {
-              document.querySelector('#cityErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
-              document.getElementById("city").focus();
+            const cityErrorMsg = document.querySelector('#cityErrorMsg')
+            
+            if(!e.target.value) {
+                cityErrorMsg.innerHTML = 'This field cannot be blank';
+               return;
             }
+
+            if(hasNumber(e.target.value)) {
+                cityErrorMsg.innerHTML = 'This field cannot contain numbers';
+                return;
+            }
+            
+            if(!hasSpecialChars(e.target.value)) {
+                cityErrorMsg.innerHTML = 'This field cannot contain special characters';
+                return;
+            }
+
+            cityErrorMsg.innerHTML = '';
             break;
 
 
         case "email":
-            if(fieldInput.e_mail.test(e.target.value)){
-                document.querySelector('#emailErrorMsg').innerHTML = '';
-            } else {
-              document.querySelector('#emailErrorMsg').innerHTML = 'No numbers or special characters are allowed in this field';
-              document.getElementById("city").focus();
+
+            if(!e.target.value) {
+                document.querySelector('#emailErrorMsg').innerHTML = 'This field cannot be blank';
+               return;
             }
+
+            if(!isEmail(e.target.value)){
+                document.querySelector('#emailErrorMsg').innerHTML = 'Invalid email';
+                return;
+            }
+
+            document.querySelector('#emailErrorMsg').innerHTML = '';
+
             break;
        
     }
 }
 
 entries.forEach((input) => {
+    if(input.name === 'firstName') input.focus(); 
+
+    input.required = false
     //input.addEventListener('keyup', formValidate);
     input.addEventListener('blur', formValidate);
 });
 
 
-/*formFields.addEventListener('submit', (e) =>{
+cartForm.addEventListener('submit',async  (e) =>{
     e.preventDefault();
-});*/
+    
+    const contact = {};
+    entries.forEach((input) => {
 
+        if(!input.value) {
+            input.nextElementSibling.innerHTML = 'This field cannot be blank'
+            return;
+        };
 
+        if(input.name) contact[input.name] = input.value;
+    });
 
-/*document.addEventListener("DOMContentLoaded", function(){
-    document.getElementById("cart__order__form").addEventListener('cart__order__form__submit',validateForm);
+    const products = JSON.parse(localStorage.getItem('cart'));
+
+    let res = await fetch('http://localhost:3000/api/cart',{
+        method: 'POST',
+        body: JSON.stringify({contact,products}),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    res = res.json();
+
+    console.log({res})
+    
 });
 
 
 
-function validateForm(event){
-    event.preventDefault();
-    let userName = document.getElementById('firstName').value;
-    //if(userName.length ==0){
-    if(userName === 5){
-        alert('Numbers not permitted');
-        return;
-    }
-}*/
-
-
-
-
-
-
-
-
+// document.addEventListener("DOMContentLoaded", function(){
+//     document.querySelector(".cart__order__form").addEventListener('cart__order__form__submit',validateForm);
+// });
 
