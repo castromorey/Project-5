@@ -132,7 +132,7 @@ const fieldInput = {
 const formValidate = (e) =>{
 
     const hasNumber = (myString) => /\d/.test(myString);
-    const hasSpecialChars = (myString) => /^[A-Za-zÀ-ÿ0-9 ]+$/.test(myString);
+    const hasSpecialChars = (myString) => /^[A-Za-zÀ-ÿ0-9]+$/.test(myString);
     const isEmail = (myString) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(myString.toLowerCase());
     
 
@@ -141,24 +141,30 @@ const formValidate = (e) =>{
         
         case "firstName":
 
-            const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg')
+            const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
 
             if(!e.target.value) {
                 firstNameErrorMsg.innerHTML = 'This field cannot be blank';
+                lastName.style.border = '1px solid red';
+                
                return;
             }
 
             if(hasNumber(e.target.value)) {
                 firstNameErrorMsg.innerHTML = 'This field cannot contain numbers';
+                firstName.style.border = '1px solid red';
                 return;
+         
             }
             
             if(!hasSpecialChars(e.target.value)) {
                 firstNameErrorMsg.innerHTML = 'This field cannot contain special characters';
+                firstName.style.border = '1px solid red';
                 return;
             }
 
             firstNameErrorMsg.innerHTML = '';
+            firstName.style.border = 'initial';
 
             break;
 
@@ -168,31 +174,36 @@ const formValidate = (e) =>{
             
             if(!e.target.value) {
                 lastNameErrorMsg.innerHTML = 'This field cannot be blank';
+                lastName.style.border = '1px solid red';
                return;
             }
 
             if(hasNumber(e.target.value)) {
                 lastNameErrorMsg.innerHTML = 'This field cannot contain numbers';
+                lastName.style.border = '1px solid red';
                 return;
             }
             
             if(!hasSpecialChars(e.target.value)) {
                 lastNameErrorMsg.innerHTML = 'This field cannot contain special characters';
+                lastName.style.border = '1px solid red';
                 return;
             }
 
             lastNameErrorMsg.innerHTML = '';
-
+            lastName.style.border = 'initial';
             
             break;
 
         case "address":
             if(!e.target.value) {
                 document.querySelector('#addressErrorMsg').innerHTML = 'This field cannot be blank';
+                address.style.border = '1px solid red';
                return;
             }
 
             document.querySelector('#addressErrorMsg').innerHTML = '';
+            address.style.border = 'initial';
 
             break;
 
@@ -201,20 +212,24 @@ const formValidate = (e) =>{
             
             if(!e.target.value) {
                 cityErrorMsg.innerHTML = 'This field cannot be blank';
+                city.style.border = '1px solid red';
                return;
             }
 
             if(hasNumber(e.target.value)) {
                 cityErrorMsg.innerHTML = 'This field cannot contain numbers';
+                city.style.border = '1px solid red';
                 return;
             }
             
             if(!hasSpecialChars(e.target.value)) {
                 cityErrorMsg.innerHTML = 'This field cannot contain special characters';
+                city.style.border = '1px solid red';
                 return;
             }
 
             cityErrorMsg.innerHTML = '';
+            city.style.border = 'initial';
             break;
 
 
@@ -222,15 +237,18 @@ const formValidate = (e) =>{
 
             if(!e.target.value) {
                 document.querySelector('#emailErrorMsg').innerHTML = 'This field cannot be blank';
+                email.style.border = '1px solid red';
                return;
             }
 
             if(!isEmail(e.target.value)){
                 document.querySelector('#emailErrorMsg').innerHTML = 'Invalid email';
+                email.style.border = '1px solid red';
                 return;
             }
 
             document.querySelector('#emailErrorMsg').innerHTML = '';
+            city.style.border = 'initial';
 
             break;
        
@@ -245,10 +263,11 @@ entries.forEach((input) => {
     input.addEventListener('blur', formValidate);
 });
 
+//Sending Form 
 
 cartForm.addEventListener('submit',async  (e) =>{
     e.preventDefault();
-    
+    console.log('Se hizo click');
     const contact = {};
     entries.forEach((input) => {
 
