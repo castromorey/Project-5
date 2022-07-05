@@ -164,7 +164,7 @@ const formValidate = (e) =>{
             }
 
             firstNameErrorMsg.innerHTML = '';
-            firstName.style.border = 'initial';
+            firstName.style.border = '1.5px solid green';
 
             break;
 
@@ -191,7 +191,7 @@ const formValidate = (e) =>{
             }
 
             lastNameErrorMsg.innerHTML = '';
-            lastName.style.border = 'initial';
+            lastName.style.border = '1.5px solid green';
             
             break;
 
@@ -203,7 +203,7 @@ const formValidate = (e) =>{
             }
 
             document.querySelector('#addressErrorMsg').innerHTML = '';
-            address.style.border = 'initial';
+            address.style.border = '1.5px solid green';
 
             break;
 
@@ -229,7 +229,7 @@ const formValidate = (e) =>{
             }
 
             cityErrorMsg.innerHTML = '';
-            city.style.border = 'initial';
+            city.style.border = '1.5px solid green';
             break;
 
 
@@ -247,8 +247,9 @@ const formValidate = (e) =>{
                 return;
             }
 
-            document.querySelector('#emailErrorMsg').innerHTML = '';
-            city.style.border = 'initial';
+            //document.querySelector('#emailErrorMsg').innerHTML = '';
+            emailErrorMsg.innerHTML = '';
+            email.style.border = '1.5px solid green';
 
             break;
        
@@ -267,7 +268,6 @@ entries.forEach((input) => {
 
 cartForm.addEventListener('submit',async  (e) =>{
     e.preventDefault();
-    console.log('Se hizo click');
     const contact = {};
     entries.forEach((input) => {
 
@@ -281,7 +281,10 @@ cartForm.addEventListener('submit',async  (e) =>{
 
     const products = JSON.parse(localStorage.getItem('cart'));
 
-    let res = await fetch('http://localhost:3000/api/cart',{
+
+    let res = await fetch('http://localhost:3000/api/cart', { mode: 'no-cors' },{
+    
+    //let res = await fetch('http://localhost:3000/api/cart',{
         method: 'POST',
         body: JSON.stringify({contact,products}),
         headers: {
@@ -289,7 +292,7 @@ cartForm.addEventListener('submit',async  (e) =>{
         }
     })
 
-    res = res.json();
+    res = await res.json();
 
     console.log({res})
     
@@ -297,7 +300,4 @@ cartForm.addEventListener('submit',async  (e) =>{
 
 
 
-// document.addEventListener("DOMContentLoaded", function(){
-//     document.querySelector(".cart__order__form").addEventListener('cart__order__form__submit',validateForm);
-// });
 
