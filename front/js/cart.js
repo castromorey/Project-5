@@ -281,18 +281,23 @@ cartForm.addEventListener('submit',async  (e) =>{
 
     const products = JSON.parse(localStorage.getItem('cart'));
 
+    const productIds = products.map(p => p.productId)
 
-    let res = await fetch('http://localhost:3000/api/cart', { mode: 'no-cors' },{
-    
-    //let res = await fetch('http://localhost:3000/api/cart',{
+
+    let res = await fetch('http://localhost:3000/api/products/order', {
+        // mode: 'no-cors',
         method: 'POST',
-        body: JSON.stringify({contact,products}),
+        body: JSON.stringify({contact,products: productIds}),
         headers: {
             'Content-Type': 'application/json'
         }
     })
 
     res = await res.json();
+
+    if(res.orderId) {
+        window.location.href = `/front/html/confirmation.html?orderId=${res.orderId}`
+    }
 
     console.log({res})
     
