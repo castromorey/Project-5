@@ -2,8 +2,10 @@
 
 function fetchProducts(){
     fetch('http://localhost:3000/api/products').then(res=>res.json()).then(products=>{ //http is endpoint url to interact with an external API
+
+        //This is the document wich I wanna interact in the html file (DOM)
         const items = document.querySelector('#items');
-        console.log(products);
+        //console.log(products);
 
         products.forEach(product => {
             items.innerHTML+=`

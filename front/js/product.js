@@ -7,6 +7,7 @@ const productId = searchParams.get('id');
 
 let data = {};
 
+
 function fetchProduct(){
     fetch('http://localhost:3000/api/products/' + productId).then(res=>res.json()).then(({name, price, imageUrl, ...product})=>{
         
