@@ -1,6 +1,6 @@
 
 
-const itemsList = document.querySelector('#cart__items');
+const itemsList = document.querySelector('#cart__items'); // element where I wanan show the items
 const totalQuantity = document.querySelector('#totalQuantity');
 const totalPrice = document.querySelector('#totalPrice');
 
@@ -8,9 +8,10 @@ const totalPrice = document.querySelector('#totalPrice');
 
 const updateQty = (e) => {
 
-    const itemId = Number(e.path[4].dataset.id);
+    const itemId = Number(e.path[4].dataset.id); //identify an especifit id from local storage
 
-    cartItems = cartItems.map((item, cartId) => {
+    cartItems = cartItems.map((item, cartId) => { //identify an especifit product to update his quantity with cart index
+
 
         if(cartId === itemId) return {...item, qty: e.target.valueAsNumber }
         else return item;
@@ -26,7 +27,7 @@ const updateQty = (e) => {
 
     
 }
-
+// this code delete an item from cart
 const deleteItem = (e) => {
 
 
@@ -37,7 +38,7 @@ const deleteItem = (e) => {
         return cartId !== itemId
     })
 
-    displayItems(cartItems)
+    displayItems(cartItems) //update ot renderizw dom or list
     calculateTotals(cartItems)
 
     localStorage.setItem('cart', JSON.stringify(cartItems))
@@ -47,13 +48,13 @@ const deleteItem = (e) => {
 
 const displayItems = (items) => {
 
-    let output = ``;
+    let output = ``; //empty list 
 
 
     let count = 0;
-    for (const item of items) {
+    for (const item of items) { //show all items from product page save in the local storage
 
-        output += `
+        output += ` 
         <article class="cart__item" data-id="${count}" data-color="${item.color}">
             <div class="cart__item__img">
                 <img src="${item.imageUrl}" alt="${item.name}">
@@ -81,8 +82,9 @@ const displayItems = (items) => {
     count++;
     }
 
-    itemsList.innerHTML = output
+    itemsList.innerHTML = output //new list
 
+    //Update the new list and its quantity  
     document.querySelectorAll('.itemQuantity').forEach(input => input.addEventListener('change', updateQty));
     document.querySelectorAll('.deleteItem').forEach(input => input.addEventListener('click', deleteItem));
 
@@ -95,10 +97,11 @@ const calculateTotals = (items) => {
 
     //calculate total order
     for (const item of items) {
-        orderItems += item.qty
+        orderItems += item.qty //line 70
         orderTotal += item.qty * item.price    
     }
     
+    //show items quantity and order total in cart page
     totalQuantity.innerHTML = orderItems;
     totalPrice.innerHTML = orderTotal;
 
@@ -126,13 +129,13 @@ const fieldInput = {
 
 }
 
-// validating Form fields
+// Regular expressions
 
 
 const formValidate = (e) =>{
 
-    const hasNumber = (myString) => /\d/.test(myString);
-    const hasSpecialChars = (myString) => /^[A-Za-zÀ-ÿ0-9]+$/.test(myString);
+    const hasNumber = (myString) => /\d/.test(myString); //validating some field to prevent numbers into
+    const hasSpecialChars = (myString) => /^[A-Za-zÀ-ÿ0-9]+$/.test(myString); //validating some field to prevent special characters into
     const isEmail = (myString) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(myString.toLowerCase());
     
 
@@ -143,7 +146,7 @@ const formValidate = (e) =>{
 
             const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
 
-            if(!e.target.value) {
+            if(!e.target.value) { //validating the field is not empty
                 firstNameErrorMsg.innerHTML = 'This field cannot be blank';
                 lastName.style.border = '1px solid red';
                 
@@ -259,12 +262,12 @@ const formValidate = (e) =>{
 entries.forEach((input) => {
     if(input.name === 'firstName') input.focus(); 
 
-    input.required = false
+   // input.required = false
     //input.addEventListener('keyup', formValidate);
     input.addEventListener('blur', formValidate);
 });
 
-//Sending Form 
+//Prevent prevent submitting incomplete form
 
 cartForm.addEventListener('submit',async  (e) =>{
     e.preventDefault();
@@ -283,9 +286,8 @@ cartForm.addEventListener('submit',async  (e) =>{
 
     const productIds = products.map(p => p.productId)
 
-
+    //information to send to the back-end
     let res = await fetch('http://localhost:3000/api/products/order', {
-        // mode: 'no-cors',
         method: 'POST',
         body: JSON.stringify({contact,products: productIds}),
         headers: {
@@ -293,7 +295,7 @@ cartForm.addEventListener('submit',async  (e) =>{
         }
     })
 
-    res = await res.json();
+    res = await res.json(); //convert server response to json format
 
     if(res.orderId) {
         window.location.href = `/front/html/confirmation.html?orderId=${res.orderId}`
