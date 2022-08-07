@@ -132,7 +132,7 @@ const fieldInput = {
 // Regular expressions
 
 
-const formValidate = (e) =>{
+const formValidate = (input) =>{
 
     const hasNumber = (myString) => /\d/.test(myString); //validating some field to prevent numbers into
     const hasSpecialChars = (myString) => /^[A-Za-zÀ-ÿ0-9]+$/.test(myString); //validating some field to prevent special characters into
@@ -140,27 +140,27 @@ const formValidate = (e) =>{
     
 
 
-    switch (e.target.name){
+    switch (input.name){
         
         case "firstName":
 
             const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
 
-            if(!e.target.value) { //validating the field is not empty
+            if(!input.value) { //validating the field is not empty
                 firstNameErrorMsg.innerHTML = 'This field cannot be blank';
-                lastName.style.border = '1px solid red';
+                firstName.style.border = '1px solid red';
                 
                return;
             }
 
-            if(hasNumber(e.target.value)) {
+            if(hasNumber(input.value)) {
                 firstNameErrorMsg.innerHTML = 'This field cannot contain numbers';
                 firstName.style.border = '1px solid red';
                 return;
          
             }
             
-            if(!hasSpecialChars(e.target.value)) {
+            if(!hasSpecialChars(input.value)) {
                 firstNameErrorMsg.innerHTML = 'This field cannot contain special characters';
                 firstName.style.border = '1px solid red';
                 return;
@@ -175,19 +175,19 @@ const formValidate = (e) =>{
 
             const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg')
             
-            if(!e.target.value) {
+            if(!input.value) {
                 lastNameErrorMsg.innerHTML = 'This field cannot be blank';
                 lastName.style.border = '1px solid red';
                return;
             }
 
-            if(hasNumber(e.target.value)) {
+            if(hasNumber(input.value)) {
                 lastNameErrorMsg.innerHTML = 'This field cannot contain numbers';
                 lastName.style.border = '1px solid red';
                 return;
             }
             
-            if(!hasSpecialChars(e.target.value)) {
+            if(!hasSpecialChars(input.value)) {
                 lastNameErrorMsg.innerHTML = 'This field cannot contain special characters';
                 lastName.style.border = '1px solid red';
                 return;
@@ -199,7 +199,7 @@ const formValidate = (e) =>{
             break;
 
         case "address":
-            if(!e.target.value) {
+            if(!input.value) {
                 document.querySelector('#addressErrorMsg').innerHTML = 'This field cannot be blank';
                 address.style.border = '1px solid red';
                return;
@@ -213,19 +213,19 @@ const formValidate = (e) =>{
         case "city":
             const cityErrorMsg = document.querySelector('#cityErrorMsg')
             
-            if(!e.target.value) {
+            if(!input.value) {
                 cityErrorMsg.innerHTML = 'This field cannot be blank';
                 city.style.border = '1px solid red';
                return;
             }
 
-            if(hasNumber(e.target.value)) {
+            if(hasNumber(input.value)) {
                 cityErrorMsg.innerHTML = 'This field cannot contain numbers';
                 city.style.border = '1px solid red';
                 return;
             }
             
-            if(!hasSpecialChars(e.target.value)) {
+            if(!hasSpecialChars(input.value)) {
                 cityErrorMsg.innerHTML = 'This field cannot contain special characters';
                 city.style.border = '1px solid red';
                 return;
@@ -238,13 +238,15 @@ const formValidate = (e) =>{
 
         case "email":
 
-            if(!e.target.value) {
+        console.log({isEmail: isEmail(input.value), email: input.value})
+
+            if(!input.value) {
                 document.querySelector('#emailErrorMsg').innerHTML = 'This field cannot be blank';
                 email.style.border = '1px solid red';
                return;
             }
 
-            if(!isEmail(e.target.value)){
+            if(!isEmail(input.value)){
                 document.querySelector('#emailErrorMsg').innerHTML = 'Invalid email';
                 email.style.border = '1px solid red';
                 return;
@@ -257,14 +259,17 @@ const formValidate = (e) =>{
             break;
        
     }
+
+
 }
 
 entries.forEach((input) => {
+
     if(input.name === 'firstName') input.focus(); 
 
    // input.required = false
     //input.addEventListener('keyup', formValidate);
-    input.addEventListener('blur', formValidate);
+    input.addEventListener('blur', (e) => formValidate(e.target));
 });
 
 //Prevent prevent submitting incomplete form
@@ -273,7 +278,8 @@ cartForm.addEventListener('submit',async  (e) =>{
     e.preventDefault();
     const contact = {};
     entries.forEach((input) => {
-
+        
+        formValidate(input)
         if(!input.value) {
             input.nextElementSibling.innerHTML = 'This field cannot be blank'
             return;
@@ -284,12 +290,12 @@ cartForm.addEventListener('submit',async  (e) =>{
 
     const products = JSON.parse(localStorage.getItem('cart'));
 
-    const productIds = products.map(p => p.productId)
+    const productIds = products.map(p => p.productId) //return an item each time it finds one
 
     //information to send to the back-end
     let res = await fetch('http://localhost:3000/api/products/order', {
         method: 'POST',
-        body: JSON.stringify({contact,products: productIds}),
+        body: JSON.stringify({contact,products: productIds}), // send the information to the back-en or server
         headers: {
             'Content-Type': 'application/json'
         }
@@ -297,11 +303,12 @@ cartForm.addEventListener('submit',async  (e) =>{
 
     res = await res.json(); //convert server response to json format
 
-    if(res.orderId) {
+    if(res.orderId) { //redirect the page to the confirmation page
+        localStorage.removeItem('cart')
         window.location.href = `/front/html/confirmation.html?orderId=${res.orderId}`
     }
 
-    console.log({res})
+   // console.log({res})
     
 });
 
