@@ -2,6 +2,8 @@
 const colorsElm = document.querySelector('#colors');
 const qtyElm = document.querySelector('#quantity');
 
+//Pass values from one page to another using the Javascript Get Method
+
 const searchParams = new URLSearchParams(location.search);
 const productId = searchParams.get('id');
 
@@ -44,19 +46,16 @@ const addToCart = () => {
         qty: Number(qtyElm.value)
     }
 
-    // console.log(data)
+
 
     const errors = {};
     
-    // if(document.querySelector('.item__content__settings__color p')) document.querySelector('.item__content__settings__color p').innerHTML = ``;
-
+    //show errors in product page is not select color or quantity
 
     if(!data.color) {
         errors.color = 'Must select a color.'
         alert(errors.color);
         return;
-        //console.dir(document.querySelector('#colors'));
-        // document.querySelector('#colors').parentElement.innerHTML += `<p style="color: red;">${errors.color}</p>`;
 
     }
 
@@ -66,27 +65,25 @@ const addToCart = () => {
         errors.qty = 'Quantity must be 1 or more'
         alert(errors.qty);
         return;
-        //document.querySelector('.item__content__settings__quantity').parentElement.innerHTML += '<p>Quantity must be 1 or more</p>';
     }
 
     
 
-    //list from local storage
+    //list from local storage is not errors
     if(Object.keys(errors).length === 0 ) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-     
-     const product = cart.find(item => item.productId === data.productId && item.color === data.color );
+     //compare items with color and id
+
+          const product = cart.find(item => item.productId === data.productId && item.color === data.color );
         if(product) {
             product.qty = product.qty + data.qty;
 
-            //console.log({cart})
 
             cart = cart.filter(item => {
                 return product.productId !== item.productId
             })
 
-            //console.log({cart})
 
             localStorage.setItem('cart', JSON.stringify([...cart, product]))
      
@@ -96,7 +93,7 @@ const addToCart = () => {
 
         alert('Product added to cart')
        
-    }else{
+    }else{ //show if errors
         console.log({errors})
     }
 

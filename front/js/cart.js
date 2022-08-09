@@ -20,7 +20,7 @@ const updateQty = (e) => {
 
     calculateTotals(cartItems)
 
-    localStorage.setItem('cart', JSON.stringify(cartItems))
+    localStorage.setItem('cart', JSON.stringify(cartItems)) //include items to the local storage
 
 
     console.log({cartItems})
@@ -267,8 +267,7 @@ entries.forEach((input) => {
 
     if(input.name === 'firstName') input.focus(); 
 
-   // input.required = false
-    //input.addEventListener('keyup', formValidate);
+   // validate data in each field
     input.addEventListener('blur', (e) => formValidate(e.target));
 });
 
@@ -304,7 +303,9 @@ cartForm.addEventListener('submit',async  (e) =>{
     res = await res.json(); //convert server response to json format
 
     if(res.orderId) { //redirect the page to the confirmation page
-        localStorage.removeItem('cart')
+
+        localStorage.removeItem('cart') //clining the caert content from local storage
+
         window.location.href = `/front/html/confirmation.html?orderId=${res.orderId}`
     }
 
